@@ -12,6 +12,7 @@ import com.deborahvalerio.dslist.dto.GameMinDTO;
 import com.deborahvalerio.dslist.entities.Game;
 import com.deborahvalerio.dslist.projections.GameMinProjection;
 import com.deborahvalerio.dslist.repositories.GameRepository;
+import com.deborahvalerio.dslist.services.exceptions.ResourceNotFoundException;
 
 @Service
 public class GameService {
@@ -21,8 +22,13 @@ public class GameService {
 	
 	@Transactional(readOnly = true)
 	public GameDTO findById(@PathVariable Long id) {
-		Game result = gameRepository.findById(id).get();
-		return new GameDTO(result);
+		if (gameRepository.existsById(id)) {
+			Game result = gameRepository.findById(id).get();
+			return new GameDTO(result);
+		}
+		else {
+			throw new ResourceNotFoundException(id);
+		}
 	}
 	
 	@Transactional(readOnly = true)
