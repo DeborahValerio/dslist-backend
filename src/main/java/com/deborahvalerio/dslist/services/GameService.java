@@ -11,6 +11,7 @@ import com.deborahvalerio.dslist.dto.GameDTO;
 import com.deborahvalerio.dslist.dto.GameMinDTO;
 import com.deborahvalerio.dslist.entities.Game;
 import com.deborahvalerio.dslist.projections.GameMinProjection;
+import com.deborahvalerio.dslist.repositories.GameListRepository;
 import com.deborahvalerio.dslist.repositories.GameRepository;
 import com.deborahvalerio.dslist.services.exceptions.ResourceNotFoundException;
 
@@ -19,6 +20,9 @@ public class GameService {
 	
 	@Autowired
 	private GameRepository gameRepository;
+	
+	@Autowired
+	private GameListRepository gameListRepository;
 	
 	@Transactional(readOnly = true)
 	public GameDTO findById(@PathVariable Long id) {
@@ -39,7 +43,12 @@ public class GameService {
 	
 	@Transactional(readOnly = true)
 	public List<GameMinDTO> findByList(Long listId){
-		List<GameMinProjection> result = gameRepository.searchByList(listId);
-		return result.stream().map(x-> new GameMinDTO(x)).toList();
+		if (gameListRepository.existsById(listId)) {
+			List<GameMinProjection> result = gameRepository.searchByList(listId);
+			return result.stream().map(x-> new GameMinDTO(x)).toList();
+		}
+		else {
+			throw new ResourceNotFoundException(listId);
+		}
 	}
 }
