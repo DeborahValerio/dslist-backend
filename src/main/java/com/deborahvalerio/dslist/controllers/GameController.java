@@ -3,6 +3,7 @@ package com.deborahvalerio.dslist.controllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,14 +21,14 @@ public class GameController {
 	private GameService gameService;	
 
 	@GetMapping(value = "/{id}")
-	public GameDTO findById(@PathVariable Long id) {
+	public ResponseEntity<GameDTO> findById(@PathVariable Long id) {
 		GameDTO result = gameService.findById(id);
-		return result;
+		return ResponseEntity.ok().body(result);
 	}
 	
 	@GetMapping
-	public List<GameMinDTO> findAll() {
+	public ResponseEntity<List<GameMinDTO>> findAll() {
 		List<GameMinDTO> result = gameService.findAll();
-		return result;
+		return ResponseEntity.ok().body(result);
 	}
 }
